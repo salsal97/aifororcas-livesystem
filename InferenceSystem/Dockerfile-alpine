@@ -1,0 +1,50 @@
+ARG PYTHON_VERSION=3.10.7
+
+ARG BUILD_ALPINE_VERSION=3.16
+
+FROM python:${PYTHON_VERSION}-alpine${BUILD_ALPINE_VERSION} AS alpine
+
+# FROM python:3.10.7-alpine3.16
+
+# Install sudo apk add requirements
+# RUN pip install git
+
+RUN apk add --update --no-cache \
+        libsm \
+        libxext \
+        libxrender-dev \
+        glib-dev    \
+        ffmpeg \
+        python3-dev \
+        py3-pip \
+        unzip \
+        git \
+        gcc \
+        build-base
+        # freetype-dev libpng-dev openblas-dev
+
+# Install pip requirements
+WORKDIR /usr/src/install
+COPY ./requirements.txt ./requirements.txt
+
+RUN echo "http://dl-8.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+RUN apk --no-cache --update-cache add gcc gfortran build-base wget freetype-dev libpng-dev openblas-dev
+RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
+
+RUN python3 -m pip install --upgrade pip && pip install -r requirements.txt
+
+# From now on, we will be working in the app's running directory
+WORKDIR /usr/src/app
+
+# Put model in place at WORKDIR/model
+COPY ./model.zip ./model.zip
+RUN unzip ./model.zip
+RUN rm ./model.zip
+
+# Move source code to app working directory
+COPY ./src/ ./src
+COPY ./config/ ./config
+
+CMD ["python3", "-u", "./src/LiveInferenceOrchestrator.py", "--config", "./config/Production/FastAI_LiveHLS_OrcasoundLab.yml"]
+
+# python3 -u ./src/LiveInferenceOrchestrator.py --config ./config/Production/FastAI_LiveHLS_OrcasoundLab.yml

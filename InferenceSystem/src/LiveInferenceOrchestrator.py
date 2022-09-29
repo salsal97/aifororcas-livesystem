@@ -21,7 +21,7 @@ from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from azure.cosmos import exceptions, CosmosClient, PartitionKey
 
 import sys
-
+import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 from opencensus.ext.azure.log_exporter import AzureEventHandler
 
@@ -101,7 +101,7 @@ if __name__ == "__main__":
 	# logger to app insights
 	con_string = os.getenv('INFERENCESYSTEM_APPINSIGHTS_CONNECTION_STRING')
 	logger = logging.getLogger(__name__)
-	if appInsightsKey is not None:
+	if con_string is not None:
 		logger.addHandler(AzureLogHandler(connection_string=con_string))
 		logger.addHandler(AzureEventHandler(connection_string=con_string))
 		logger.setLevel(logging.INFO)
@@ -123,7 +123,9 @@ if __name__ == "__main__":
 	if config_params["upload_to_azure"]:
 		# set up for Azure Storage Account connection
 		connect_str = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
+		print(connect_str)
 		blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+		print(blob_service_client)
 
 		# set up for Azure CosmosDB connection
 		cosmos_db_endpoint = "https://aifororcasmetadatastore.documents.azure.com:443/"

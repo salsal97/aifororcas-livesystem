@@ -28,7 +28,7 @@ There should be 1 file
 ## Get connection string for interface with Azure Storage
 To be able to upload detections to Azure, you will need a connection string.
 
-Go to [Azure portal](https://portal.azure.com/) and find the `"LiveSRKWNotificationSystem"` resource group. Within that go to the `"livemlaudiospecstorage"` storage account. Refer to [this page](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-python#copy-your-credentials-from-the-azure-portal) to see how to get the connection string.
+Go to [Azure portal](https://portal.azure.com/) and find the `"LiveSRKWNotificationSystem"` resource group. Within that go to the `"aifororcasmetadatastore"` storage account. Refer to [this page](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-python#copy-your-credentials-from-the-azure-portal) to see how to get the connection string. Currently it seems you must manually prefix your connection string with "DefaultEndpointsProtocol=https;AccountName=aifororcasmetadatastore;"
 
 ### Windows
 
@@ -149,6 +149,7 @@ This can be completed in two ways.
         ```
         AZURE_COSMOSDB_PRIMARY_KEY=<key>
         AZURE_STORAGE_CONNECTION_STRING=<string>
+        INFERENCESYSTEM_APPINSIGHTS_CONNECTION_STRING=<string>
         ```
 
 ## Building the docker container for production
